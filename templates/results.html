@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results - ML Intrusion Detection Dashboard</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header class="dashboard-header">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <h1>ML Intrusion Detection System</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+                    <li><a href="/results" class="active"><i class="fas fa-chart-line"></i> Results</a></li>
+                    <li><a href="#" id="help-link"><i class="fas fa-question-circle"></i> Help</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main class="content">
+            <div class="results-container">
+                <!-- Dashboard Summary -->
+                <div class="summary-section">
+                    <h2>Analysis Results</h2>
+                
+                    <!-- ✅ Network Anomaly Result -->
+                    <div class="prediction-container">
+                        <h2>Network Analysis Result</h2>
+                        <p class="prediction-text">{{ prediction_text }}</p>
+                    </div>
+                
+                    <div class="summary-cards">
+                        <div class="summary-card">
+                            <div class="summary-icon"><i class="fas fa-check-circle"></i></div>
+                            <div class="summary-info">
+                                <h3>Best Model</h3>
+                                <p id="best-model">Random Forest</p>
+                                <p id="best-model-accuracy">Accuracy: 99.2%</p>
+                            </div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-icon"><i class="fas fa-table"></i></div>
+                            <div class="summary-info">
+                                <h3>Data Sample</h3>
+                                <p id="data-rows">5,000 records analyzed</p>
+                                <button id="view-data-btn" class="btn-secondary">View Data</button>
+                            </div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-icon"><i class="fas fa-file-download"></i></div>
+                            <div class="summary-info">
+                                <h3>Export</h3>
+                                <button id="export-pdf-btn" class="btn-secondary">PDF Report</button>
+                                <button id="export-csv-btn" class="btn-secondary">CSV Results</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+
+                <!-- Main Dashboard Tabs -->
+                <div class="dashboard-tabs">
+                    <div class="tab-header">
+                        <button class="tab-btn active" data-tab="comparison">Model Comparison</button>
+                        <button class="tab-btn" data-tab="individual">Individual Models</button>
+                        <button class="tab-btn" data-tab="data">Data Analysis</button>
+                    </div>
+
+                    <!-- Model Comparison Tab -->
+                    <div class="tab-content active" id="comparison-tab">
+                        <div class="chart-container">
+                            <div class="chart-card">
+                                <h3>Model Performance Comparison</h3>
+                                <div class="chart-wrapper">
+                                    <canvas id="performance-chart"></canvas>
+                                </div>
+                            </div>
+                            <div class="chart-card">
+                                <h3>ROC-AUC Comparison</h3>
+                                <div class="chart-wrapper">
+                                    <canvas id="roc-chart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-container">
+                            <h3>Comparison Table</h3>
+                            <table id="comparison-table" class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Model</th>
+                                        <th>Accuracy</th>
+                                        <th>Precision</th>
+                                        <th>Recall</th>
+                                        <th>F1 Score</th>
+                                        <th>ROC-AUC</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Will be filled by JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Individual Models Tab -->
+                    <div class="tab-content" id="individual-tab">
+                        <div class="model-selector">
+                            <label for="model-select">Select Model:</label>
+                            <select id="model-select">
+                                <option value="logistic">Logistic Regression</option>
+                                <option value="knn">KNN</option>
+                                <option value="rf" selected>Random Forest</option>
+                                <option value="svm">SVM</option>
+                                <option value="nn">Neural Network</option>
+                            </select>
+                        </div>
+                        <div class="model-details">
+                            <div class="chart-card">
+                                <h3 id="model-detail-title">Random Forest Metrics</h3>
+                                <div class="chart-wrapper">
+                                    <canvas id="individual-metrics-chart"></canvas>
+                                </div>
+                            </div>
+                            <div class="chart-card">
+                                <h3>Confusion Matrix</h3>
+                                <div class="confusion-matrix">
+                                    <div class="matrix-cell top-left">
+                                        <span class="matrix-label">True Negative</span>
+                                        <span id="tn-value" class="matrix-value">2450</span>
+                                    </div>
+                                    <div class="matrix-cell top-right">
+                                        <span class="matrix-label">False Positive</span>
+                                        <span id="fp-value" class="matrix-value">20</span>
+                                    </div>
+                                    <div class="matrix-cell bottom-left">
+                                        <span class="matrix-label">False Negative</span>
+                                        <span id="fn-value" class="matrix-value">15</span>
+                                    </div>
+                                    <div class="matrix-cell bottom-right">
+                                        <span class="matrix-label">True Positive</span>
+                                        <span id="tp-value" class="matrix-value">2515</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Data Analysis Tab -->
+                    <div class="tab-content" id="data-tab">
+                        <div class="data-overview-section">
+                            <div class="chart-card">
+                                <h3>Class Distribution</h3>
+                                <div class="chart-wrapper">
+                                    <canvas id="class-distribution-chart"></canvas>
+                                </div>
+                            </div>
+                            <div class="chart-card">
+                                <h3>Feature Importance</h3>
+                                <div class="chart-wrapper">
+                                    <canvas id="feature-importance-chart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-container">
+                            <h3>Data Sample</h3>
+                            <div class="table-controls">
+                                <button id="prev-page" class="btn-secondary"><i class="fas fa-chevron-left"></i></button>
+                                <span id="page-info">Page 1 of 10</span>
+                                <button id="next-page" class="btn-secondary"><i class="fas fa-chevron-right"></i></button>
+                            </div>
+                            <div class="table-wrapper">
+                                <table id="data-sample-table" class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <!-- Will be filled by JavaScript -->
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Will be filled by JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 ML Intrusion Detection System</p>
+        </footer>
+    </div>
+
+    <!-- Data Modal -->
+    <div id="dataModal" class="modal">
+        <div class="modal-content large-modal">
+            <span class="close">&times;</span>
+            <h2>Dataset Preview</h2>
+            <div class="data-filter">
+                <input type="text" id="data-search" placeholder="Search data...">
+                <select id="class-filter">
+                    <option value="all">All Classes</option>
+                    <option value="normal">Normal</option>
+                    <option value="attack">Attack</option>
+                </select>
+            </div>
+            <div class="table-wrapper large-table">
+                <table id="full-data-table" class="data-table">
+                    <thead>
+                        <tr>
+                            <!-- Will be filled by JavaScript -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Will be filled by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-pagination">
+                <button id="modal-prev-page" class="btn-secondary"><i class="fas fa-chevron-left"></i></button>
+                <span id="modal-page-info">Page 1 of 50</span>
+                <button id="modal-next-page" class="btn-secondary"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="helpModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Results Page Help</h2>
+            <h3>Model Comparison Tab</h3>
+            <p>Compare the performance of all models using various metrics like accuracy, precision, recall, F1-score, and ROC-AUC.</p>
+            
+            <h3>Individual Models Tab</h3>
+            <p>Examine detailed performance metrics for each model, including confusion matrices and individual metric breakdowns.</p>
+            
+            <h3>Data Analysis Tab</h3>
+            <p>Explore your dataset with visualizations of class distribution, feature importance, and raw data samples.</p>
+            
+            <h3>Export Options</h3>
+            <p>Download complete analysis reports as PDF or raw results as CSV files for further analysis.</p>
+        </div>
+    </div>
+
+    <div class="ml-explanation">
+        <h2>Understanding Model Metrics</h2>
+        <p>This section helps users unfamiliar with machine learning understand the evaluation metrics.</p>
+    
+        <h3>🔹 Accuracy</h3>
+        <p>Accuracy measures how often the model makes correct predictions. Higher accuracy means better performance.</p>
+    
+        <h3>🔹 Precision</h3>
+        <p>Precision tells how many of the detected anomalies were actually anomalies.</p>
+    
+        <h3>🔹 Recall</h3>
+        <p>Recall shows how many actual anomalies the model detected. Higher recall means fewer false negatives.</p>
+    
+        <h3>🔹 F1 Score</h3>
+        <p>F1 Score is the balance between Precision and Recall. It is useful when you need both high precision and recall.</p>
+    
+        <h3>🔹 ROC-AUC Score</h3>
+        <p>ROC-AUC measures how well the model distinguishes between normal and anomaly cases. A score close to 1 means a good model.</p>
+    
+        <h2>Understanding Predictions</h2>
+    
+        <h3>✅ True Positives (TP)</h3>
+        <p>Correctly identified anomalies.</p>
+    
+        <h3>✅ True Negatives (TN)</h3>
+        <p>Correctly identified normal network traffic.</p>
+    
+        <h3>❌ False Positives (FP)</h3>
+        <p>Normal network traffic incorrectly classified as an anomaly (false alarm).</p>
+    
+        <h3>❌ False Negatives (FN)</h3>
+        <p>Anomalies incorrectly classified as normal (missed attacks).</p>
+    </div>
+    
+
+    <script src="/static/js/results.js"></script>
+</body>
+</html>

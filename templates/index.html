@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ML Intrusion Detection Dashboard</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="dashboard-header">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <h1>ML Intrusion Detection System</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/" class="active"><i class="fas fa-home"></i> Home</a></li>
+                    <li><a href="/results" id="results-link"><i class="fas fa-chart-line"></i> Results</a></li>
+                    <li><a href="#" id="help-link"><i class="fas fa-question-circle"></i> Help</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main class="content">
+            <div class="welcome-card">
+                <div class="welcome-text">
+                    <h2>Welcome to the ML Intrusion Detection Dashboard</h2>
+                    <p>Upload your network traffic data to analyze and detect potential intrusions using multiple machine learning models.</p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> Analyze with 5 different ML algorithms</li>
+                        <li><i class="fas fa-check"></i> Compare model performance</li>
+                        <li><i class="fas fa-check"></i> Interactive visualizations</li>
+                        <li><i class="fas fa-check"></i> Export results and reports</li>
+                    </ul>
+                </div>
+                <div class="upload-section">
+                    <form action="/upload" method="POST" enctype="multipart/form-data" id="upload-form">
+                        <form action="/upload" method="POST" enctype="multipart/form-data" id="upload-form">
+                            
+                            <div class="file-upload">
+                            <div class="file-select">
+                                <div class="file-select-button" id="fileName">Choose File</div>
+                                <div class="file-select-name" id="noFile">No file chosen...</div>
+                                <input type="file" name="file" id="chooseFile" accept=".csv">
+                            </div>
+                            <button type="submit" class="upload-button">
+                                <i class="fas fa-upload"></i> Upload & Analyze
+                            </button>
+                        </div>
+                    </form>
+                    <div class="upload-info">
+                        <p>Supported format: CSV</p>
+                        <p>Maximum file size: 100MB</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <div class="info-card">
+                    <div class="info-icon"><i class="fas fa-cogs"></i></div>
+                    <h3>Multiple Models</h3>
+                    <p>Analysis using Logistic Regression, KNN, Random Forest, SVM, and Neural Network models.</p>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon"><i class="fas fa-chart-pie"></i></div>
+                    <h3>Interactive Visualizations</h3>
+                    <p>Explore model performance with interactive charts and comparative analysis.</p>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon"><i class="fas fa-file-export"></i></div>
+                    <h3>Export Results</h3>
+                    <p>Download comprehensive reports and visualizations for your analysis.</p>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 ML Intrusion Detection System</p>
+        </footer>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="helpModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>How to Use This Dashboard</h2>
+            <ol>
+                <li><strong>Upload Data:</strong> Click "Choose File" and select your CSV file containing network traffic data.</li>
+                <li><strong>Analyze:</strong> Click "Upload & Analyze" to run the machine learning models.</li>
+                <li><strong>View Results:</strong> Navigate to the Results page to see model performance metrics.</li>
+                <li><strong>Compare Models:</strong> Use the interactive charts to compare different models.</li>
+                <li><strong>Export:</strong> Download reports and visualizations for your reference.</li>
+            </ol>
+            <h3>Data Format Requirements</h3>
+            <p>Your CSV file should include network traffic features and a 'class' column identifying normal/attack traffic.</p>
+        </div>
+    </div>
+
+    <script src="/static/js/main.js"></script>
+</body>
+</html>
